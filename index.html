@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystic Match Predictor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔮 Mystic Match Predictor 🔮</h1>
+            <p>Unveiling the fate of the pitch through numerology, astrology, and the esoteric.</p>
+        </header>
+
+        <main>
+            <div class="input-group">
+                <label for="teamA">Home Team:</label>
+                <input type="text" id="teamA" placeholder="e.g., Arsenal">
+            </div>
+            
+            <div class="input-group">
+                <label for="teamB">Away Team:</label>
+                <input type="text" id="teamB" placeholder="e.g., Chelsea">
+            </div>
+
+            <div class="input-group">
+                <label for="matchDate">Match Date:</label>
+                <input type="date" id="matchDate">
+            </div>
+
+            <button id="predictBtn">Consult the Oracles</button>
+
+            <div id="results" class="hidden">
+                <h2>The Prophecy</h2>
+                <div class="card">
+                    <h3>🔢 Numerology Reading</h3>
+                    <p id="numResult"></p>
+                </div>
+                <div class="card">
+                    <h3>✨ Astrological Alignment</h3>
+                    <p id="astroResult"></p>
+                </div>
+                <div class="card">
+                    <h3>👁️ Occult Resonance</h3>
+                    <p id="occultResult"></p>
+                </div>
+                <div class="final-verdict">
+                    <h3>🏆 The Fated Winner: <span id="finalWinner"></span></h3>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

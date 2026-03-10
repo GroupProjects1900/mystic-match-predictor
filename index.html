@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Mystic Predictor</title>
+    <title>Arcane Pitch Forecaster | Esoteric Football Predictions</title>
     
-    <link rel="icon" type="image/favicon.ico" href="favicon.png">
+    <meta name="title" content="Arcane Pitch Forecaster">
+    <meta name="description" content="Predicting football match outcomes through deterministic algorithms, Chaldean numerology, and the I Ching.">
+    <meta name="author" content="Kiru">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,28 +21,66 @@
     <div class="container glass-panel">
         <header>
             <h1>🔮 Arcane Forecaster</h1>
-            <p>Predicting the pitch through algorithms and ancient alignments.</p>
+            <p>Decoding the pitch through the 7 Pillars of esoteric alignment.</p>
         </header>
 
         <main>
             <div class="teams-container">
                 <div class="team-input">
-                    <label for="teamA">Home Team</label>
+                    <label>Home Team</label>
                     <input type="text" id="teamA" placeholder="e.g., Arsenal">
-                    <label for="dateA">Founding Date</label>
+                    
+                    <label>Club Founding</label>
                     <input type="date" id="dateA">
+                    
+                    <label>Manager Birth</label>
+                    <input type="date" id="managerA">
+
+                    <label>Captain Birth</label>
+                    <input type="date" id="captainA">
+
+                    <label>Kit Color</label>
+                    <select id="colorA">
+                        <option value="Red">Red / Crimson</option>
+                        <option value="Blue">Blue / Navy</option>
+                        <option value="White">White / Silver</option>
+                        <option value="Black">Black / Grey</option>
+                        <option value="Yellow">Yellow / Gold</option>
+                        <option value="Green">Green</option>
+                        <option value="Pink" selected>Pink / Magenta</option>
+                    </select>
                 </div>
                 
                 <div class="team-input">
-                    <label for="teamB">Away Team</label>
+                    <label>Away Team</label>
                     <input type="text" id="teamB" placeholder="e.g., Chelsea">
-                    <label for="dateB">Founding Date</label>
+                    
+                    <label>Club Founding</label>
                     <input type="date" id="dateB">
+                    
+                    <label>Manager Birth</label>
+                    <input type="date" id="managerB">
+
+                    <label>Captain Birth</label>
+                    <input type="date" id="captainB">
+
+                    <label>Kit Color</label>
+                    <select id="colorB">
+                        <option value="Red">Red / Crimson</option>
+                        <option value="Blue" selected>Blue / Navy</option>
+                        <option value="White">White / Silver</option>
+                        <option value="Black">Black / Grey</option>
+                        <option value="Yellow">Yellow / Gold</option>
+                        <option value="Green">Green</option>
+                        <option value="Pink">Pink / Magenta</option>
+                    </select>
                 </div>
             </div>
 
             <div class="match-details">
-                <label for="matchDate">Fixture Date</label>
+                <label>Stadium / Grounds</label>
+                <input type="text" id="stadium" placeholder="e.g., Addis Ababa Stadium">
+                <label>Fixture Date</label>
                 <input type="date" id="matchDate">
             </div>
 
@@ -51,23 +91,18 @@
 
             <div id="loader" class="hidden">
                 <div class="mystic-spinner">👁️</div>
-                <p class="loading-text">Synchronizing with the cosmos...</p>
+                <p class="loading-text">Calculating the 7 Pillars of Fate...</p>
             </div>
 
             <div id="results" class="hidden">
                 <div class="oracle-grid">
-                    <div class="oracle-card">
-                        <h3>🔢 Numerology</h3>
-                        <p id="numOutput"></p>
-                    </div>
-                    <div class="oracle-card">
-                        <h3>🌕 Astrology</h3>
-                        <p id="astroOutput"></p>
-                    </div>
-                    <div class="oracle-card full-width">
-                        <h3>☯️ I Ching</h3>
-                        <p id="ichingOutput"></p>
-                    </div>
+                    <div class="oracle-card"><h3>🔢 Twin Numerology</h3><p id="numOutput"></p></div>
+                    <div class="oracle-card"><h3>🌕 Club Astrology</h3><p id="astroOutput"></p></div>
+                    <div class="oracle-card"><h3>👑 Commander Aura</h3><p id="managerOutput"></p></div>
+                    <div class="oracle-card"><h3>🌍 Geomancy</h3><p id="geomancyOutput"></p></div>
+                    <div class="oracle-card"><h3>🧬 Captain Biorhythms</h3><p id="bioOutput"></p></div>
+                    <div class="oracle-card"><h3>🎨 Chromotherapy</h3><p id="colorOutput"></p></div>
+                    <div class="oracle-card full-width"><h3>☯️ I Ching</h3><p id="ichingOutput"></p></div>
                 </div>
                 
                 <div class="verdict-card">
@@ -77,8 +112,10 @@
                 
                 <button id="copyBtn" class="secondary-btn">📋 Copy to Clipboard</button>
             </div>
-        </main>
+       </main>
     </div>
+    
+    <script src="database.js"></script> 
     <script src="script.js"></script>
 </body>
 </html>

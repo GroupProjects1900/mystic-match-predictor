@@ -1,162 +1,225 @@
-document.getElementById('castBtn').addEventListener('click', () => {
-    const teamA = document.getElementById('teamA').value.toUpperCase();
-    const dateStrA = document.getElementById('dateA').value;
-    const teamB = document.getElementById('teamB').value.toUpperCase();
-    const dateStrB = document.getElementById('dateB').value;
-    const dateStrMatch = document.getElementById('matchDate').value;
+// ==========================================
+// 📖 AUTO-FILL LISTENER LOGIC
+// ==========================================
+const handleAutoFill = (teamInputId, prefix, isAway) => {
+    const teamName = document.getElementById(teamInputId).value.trim().toLowerCase();
+    
+    // Check if the team exists in the external database.js file
+    if (typeof clubDatabase !== 'undefined' && clubDatabase[teamName]) {
+        const data = clubDatabase[teamName];
+        document.getElementById(`date${prefix}`).value = data.founded;
+        document.getElementById(`manager${prefix}`).value = data.manager;
+        document.getElementById(`captain${prefix}`).value = data.captain;
+        
+        // DYNAMIC KIT COLOR: Home gets primary, Away gets alternate
+        document.getElementById(`color${prefix}`).value = isAway ? data.awayColor : data.homeColor;
+        
+        // UI Feedback: Neon glow when auto-filled
+        const inputEl = document.getElementById(teamInputId);
+        inputEl.style.boxShadow = "0 0 15px var(--neon-cyan)";
+        inputEl.style.borderColor = "var(--neon-cyan)";
+        setTimeout(() => {
+            inputEl.style.boxShadow = "none";
+            inputEl.style.borderColor = "var(--glass-border)";
+        }, 1200);
+    }
+};
 
-    if (!teamA || !dateStrA || !teamB || !dateStrB || !dateStrMatch) {
-        alert("The ritual is incomplete. Provide all names and exact dates.");
+// Pass 'false' for the Home team, and 'true' for the Away team
+document.getElementById('teamA').addEventListener('input', () => handleAutoFill('teamA', 'A', false));
+document.getElementById('teamB').addEventListener('input', () => handleAutoFill('teamB', 'B', true));
+
+// ==========================================
+// 🔮 THE ARCANE ENGINE (7 Pillars Logic)
+// ==========================================
+document.getElementById('castBtn').addEventListener('click', () => {
+    // 1. CAPTURE ALL INPUTS
+    const teamA = document.getElementById('teamA').value.toUpperCase();
+    const dateA = new Date(document.getElementById('dateA').value);
+    const mgrA = new Date(document.getElementById('managerA').value);
+    const capA = new Date(document.getElementById('captainA').value);
+    const colA = document.getElementById('colorA').value;
+    
+    const teamB = document.getElementById('teamB').value.toUpperCase();
+    const dateB = new Date(document.getElementById('dateB').value);
+    const mgrB = new Date(document.getElementById('managerB').value);
+    const capB = new Date(document.getElementById('captainB').value);
+    const colB = document.getElementById('colorB').value;
+    
+    const stadium = document.getElementById('stadium').value.toUpperCase();
+    const matchDate = new Date(document.getElementById('matchDate').value);
+
+    if (!teamA || isNaN(dateA) || isNaN(mgrA) || isNaN(capA) || !teamB || isNaN(dateB) || isNaN(mgrB) || isNaN(capB) || !stadium || isNaN(matchDate)) {
+        alert("The altar requires all fields to be filled before casting.");
         return;
     }
 
-    // Hide results and show loader
     document.getElementById('results').classList.add('hidden');
     document.getElementById('loader').classList.remove('hidden');
 
-    const matchDate = new Date(dateStrMatch);
-    const dateA = new Date(dateStrA);
-    const dateB = new Date(dateStrB);
-    
-    let scoreA = 0;
+    let scoreA = 0; 
     let scoreB = 0;
 
-    // --- 1. CHALDEAN NUMEROLOGY ---
-    const chaldeanChart = {
-        'A':1, 'B':2, 'C':3, 'D':4, 'E':5, 'F':8, 'G':3, 'H':5, 'I':1, 
-        'J':1, 'K':2, 'L':3, 'M':4, 'N':5, 'O':7, 'P':8, 'Q':1, 'R':2, 
-        'S':3, 'T':4, 'U':6, 'V':6, 'W':6, 'X':5, 'Y':1, 'Z':7
+    // --- HELPER: ZODIAC & AFFINITY ---
+    const getZodiac = (date) => {
+        const d = date.getDate(), m = date.getMonth() + 1;
+        if ((m==3 && d>=21)||(m==4 && d<=19)) return {s:'Aries', e:'Fire'};
+        if ((m==4 && d>=20)||(m==5 && d<=20)) return {s:'Taurus', e:'Earth'};
+        if ((m==5 && d>=21)||(m==6 && d<=20)) return {s:'Gemini', e:'Air'};
+        if ((m==6 && d>=21)||(m==7 && d<=22)) return {s:'Cancer', e:'Water'};
+        if ((m==7 && d>=23)||(m==8 && d<=22)) return {s:'Leo', e:'Fire'};
+        if ((m==8 && d>=23)||(m==9 && d<=22)) return {s:'Virgo', e:'Earth'};
+        if ((m==9 && d>=23)||(m==10 && d<=22)) return {s:'Libra', e:'Air'};
+        if ((m==10 && d>=23)||(m==11 && d<=21)) return {s:'Scorpio', e:'Water'};
+        if ((m==11 && d>=22)||(m==12 && d<=21)) return {s:'Sagittarius', e:'Fire'};
+        if ((m==12 && d>=22)||(m==1 && d<=19)) return {s:'Capricorn', e:'Earth'};
+        if ((m==1 && d>=20)||(m==2 && d<=18)) return {s:'Aquarius', e:'Air'};
+        return {s:'Pisces', e:'Water'};
     };
+    const affinity = (te, me) => (te===me)?2:((te==='Fire'&&me==='Air')||(te==='Air'&&me==='Fire')||(te==='Earth'&&me==='Water')||(te==='Water'&&me==='Earth'))?1:0;
+    const zM = getZodiac(matchDate);
 
-    const calculateChaldean = (str) => {
-        let sum = 0;
-        for (let char of str.replace(/[^A-Z]/g, '')) sum += chaldeanChart[char] || 0;
-        return sum % 9 === 0 ? 9 : sum % 9; 
-    };
-
-    const numA = calculateChaldean(teamA);
-    const numB = calculateChaldean(teamB);
-    const matchDayNum = matchDate.getDate() % 9 === 0 ? 9 : matchDate.getDate() % 9;
+    // --- PILLAR 1: TWIN NUMEROLOGY ---
+    const chaldean = {'A':1,'B':2,'C':3,'D':4,'E':5,'F':8,'G':3,'H':5,'I':1,'J':1,'K':2,'L':3,'M':4,'N':5,'O':7,'P':8,'Q':1,'R':2,'S':3,'T':4,'U':6,'V':6,'W':6,'X':5,'Y':1,'Z':7};
+    const pythagorean = (char) => (char.charCodeAt(0) - 65) % 9 + 1;
     
-    const diffA = Math.abs(numA - matchDayNum);
-    const diffB = Math.abs(numB - matchDayNum);
+    let chA = 0, pyA = 0, chB = 0, pyB = 0;
+    for (let c of teamA.replace(/[^A-Z]/g, '')) { chA += chaldean[c]||0; pyA += pythagorean(c); }
+    for (let c of teamB.replace(/[^A-Z]/g, '')) { chB += chaldean[c]||0; pyB += pythagorean(c); }
+    chA = chA%9||9; pyA = pyA%9||9; chB = chB%9||9; pyB = pyB%9||9;
     
-    let numWinner = "Neutral";
-    if (diffA < diffB) { numWinner = teamA; scoreA += 2; }
-    else if (diffB < diffA) { numWinner = teamB; scoreB += 2; }
+    const mDay = matchDate.getDate()%9||9;
+    let numWinnerA = 0, numWinnerB = 0;
+    if (Math.abs(chA - mDay) < Math.abs(chB - mDay)) numWinnerA++; else numWinnerB++;
+    if (Math.abs(pyA - mDay) < Math.abs(pyB - mDay)) numWinnerA++; else numWinnerB++;
 
-    // --- 2. ASTROLOGY (Sun Signs & Elemental) ---
-    const getZodiac = (dateObj) => {
-        const d = dateObj.getDate();
-        const m = dateObj.getMonth() + 1;
-        if ((m == 3 && d >= 21) || (m == 4 && d <= 19)) return { sign: 'Aries', element: 'Fire' };
-        if ((m == 4 && d >= 20) || (m == 5 && d <= 20)) return { sign: 'Taurus', element: 'Earth' };
-        if ((m == 5 && d >= 21) || (m == 6 && d <= 20)) return { sign: 'Gemini', element: 'Air' };
-        if ((m == 6 && d >= 21) || (m == 7 && d <= 22)) return { sign: 'Cancer', element: 'Water' };
-        if ((m == 7 && d >= 23) || (m == 8 && d <= 22)) return { sign: 'Leo', element: 'Fire' };
-        if ((m == 8 && d >= 23) || (m == 9 && d <= 22)) return { sign: 'Virgo', element: 'Earth' };
-        if ((m == 9 && d >= 23) || (m == 10 && d <= 22)) return { sign: 'Libra', element: 'Air' };
-        if ((m == 10 && d >= 23) || (m == 11 && d <= 21)) return { sign: 'Scorpio', element: 'Water' };
-        if ((m == 11 && d >= 22) || (m == 12 && d <= 21)) return { sign: 'Sagittarius', element: 'Fire' };
-        if ((m == 12 && d >= 22) || (m == 1 && d <= 19)) return { sign: 'Capricorn', element: 'Earth' };
-        if ((m == 1 && d >= 20) || (m == 2 && d <= 18)) return { sign: 'Aquarius', element: 'Air' };
-        return { sign: 'Pisces', element: 'Water' };
-    };
+    let divineConf = false;
+    if (numWinnerA === 2) { scoreA += 3; divineConf = teamA; }
+    else if (numWinnerB === 2) { scoreB += 3; divineConf = teamB; }
+    else { scoreA += 1; scoreB += 1; } 
 
-    const zodiacA = getZodiac(dateA);
-    const zodiacB = getZodiac(dateB);
-    const zodiacMatch = getZodiac(matchDate);
+    // --- PILLAR 2: CLUB ASTROLOGY ---
+    const lCycle = 29.53, kNew = new Date("2000-01-06T18:14:00Z");
+    const phaseRaw = ((matchDate - kNew)/(864e5)) % lCycle;
+    const isWax = phaseRaw < (lCycle/2);
+    const isFullOrNew = (phaseRaw < 1 || Math.abs(phaseRaw - 14.7) < 1); 
+    const astroWeight = isFullOrNew ? 4 : 2;
 
-    const checkAffinity = (teamElement, matchElement) => {
-        if (teamElement === matchElement) return 2; 
-        if ((teamElement === 'Fire' && matchElement === 'Air') || (teamElement === 'Air' && matchElement === 'Fire')) return 1;
-        if ((teamElement === 'Earth' && matchElement === 'Water') || (teamElement === 'Water' && matchElement === 'Earth')) return 1;
-        return 0; 
-    };
-
-    const affinityA = checkAffinity(zodiacA.element, zodiacMatch.element);
-    const affinityB = checkAffinity(zodiacB.element, zodiacMatch.element);
-
-    let astroWinner = "Neutral";
-    if (affinityA > affinityB) { astroWinner = teamA; scoreA += 2; }
-    else if (affinityB > affinityA) { astroWinner = teamB; scoreB += 2; }
-
-    // --- 3. ESOTERICISM / I CHING SEEDING ---
-    const seedString = `${teamA}${dateStrA}${teamB}${dateStrB}${matchDate.getTime()}`;
-    let hash = 0;
-    for (let i = 0; i < seedString.length; i++) {
-        hash = Math.imul(31, hash) + seedString.charCodeAt(i) | 0;
+    const zA = getZodiac(dateA), zB = getZodiac(dateB);
+    let astroW = "Neutral";
+    if (affinity(zA.e, zM.e) > affinity(zB.e, zM.e)) { scoreA += (astroWeight/2); astroW = teamA; }
+    else if (affinity(zB.e, zM.e) > affinity(zA.e, zM.e)) { scoreB += (astroWeight/2); astroW = teamB; }
+    
+    let lunarW = "Neutral";
+    if (isWax) { 
+        lunarW = dateA > dateB ? teamA : teamB;
+        dateA > dateB ? scoreA+=(astroWeight/2) : scoreB+=(astroWeight/2); 
+    } else { 
+        lunarW = dateA < dateB ? teamA : teamB;
+        dateA < dateB ? scoreA+=(astroWeight/2) : scoreB+=(astroWeight/2); 
     }
+
+    // --- PILLAR 3: COMMANDER ASTROLOGY ---
+    const zMgrA = getZodiac(mgrA), zMgrB = getZodiac(mgrB);
+    let mgrWinner = "Neutral";
+    if (affinity(zMgrA.e, zM.e) > affinity(zMgrB.e, zM.e)) { scoreA += 2; mgrWinner = teamA; }
+    else if (affinity(zMgrB.e, zM.e) > affinity(zMgrA.e, zM.e)) { scoreB += 2; mgrWinner = teamB; }
+
+    // --- PILLAR 4: CAPTAIN BIORHYTHMS ---
+    const getBio = (dob) => {
+        const days = (matchDate - dob) / 864e5;
+        const phys = Math.sin(2 * Math.PI * (days / 23));
+        const emot = Math.sin(2 * Math.PI * (days / 28));
+        const inte = Math.sin(2 * Math.PI * (days / 33));
+        return phys + emot + inte; 
+    };
+    const bioA = getBio(capA), bioB = getBio(capB);
+    let bioWinner = bioA > bioB ? teamA : teamB;
+    bioA > bioB ? scoreA += 2 : scoreB += 2;
+
+    // --- PILLAR 5: CHROMOTHERAPY ---
+    const dayColors = {
+        0: ['Yellow', 'Gold'],   
+        1: ['White', 'Silver'],  
+        2: ['Red', 'Pink'],      
+        3: ['Orange'],           
+        4: ['Blue'],             
+        5: ['Green'],            
+        6: ['Black']             
+    };
+    const mDayOfWeek = matchDate.getDay();
+    const rulingColors = dayColors[mDayOfWeek] || [];
     
-    const hexagram = Math.abs(hash) % 64 + 1;
-    let ichingWinner = hexagram % 2 !== 0 ? teamA : teamB;
-    hexagram % 2 !== 0 ? scoreA += 2 : scoreB += 2;
+    let colorWinner = "None / Neutral";
+    if (rulingColors.includes(colA) && !rulingColors.includes(colB)) { scoreA += 2; colorWinner = teamA; }
+    else if (rulingColors.includes(colB) && !rulingColors.includes(colA)) { scoreB += 2; colorWinner = teamB; }
 
-    // --- FAKE DELAY FOR ANIMATION (2.5 Seconds) ---
+    // --- PILLAR 6: GEOMANCY ---
+    const geomanticFigures = ["Via", "Populus", "Conjunctio", "Albus", "Amissio", "Acquisitio", "Letitia", "Tristitia", "Puella", "Puer", "Rubeus", "Carcer", "Caput Draconis", "Cauda Draconis", "Fortuna Major", "Fortuna Minor"];
+    let geoHash = 0; 
+    for (let i = 0; i < stadium.length; i++) geoHash = Math.imul(31, geoHash) + stadium.charCodeAt(i) | 0;
+    const geoIndex = Math.abs(geoHash + matchDate.getDate()) % 16;
+    const activeFigure = geomanticFigures[geoIndex];
+    let geoWinner = geoIndex % 2 !== 0 ? teamA : teamB; 
+    geoIndex % 2 !== 0 ? scoreA += 2 : scoreB += 2;
+
+    // --- PILLAR 7: I CHING ---
+    const ichingSeed = `${teamA}${teamB}${matchDate.getTime()}`;
+    let iHash = 0; 
+    for (let i=0; i<ichingSeed.length; i++) iHash = Math.imul(31, iHash) + ichingSeed.charCodeAt(i) | 0;
+    const hex = Math.abs(iHash) % 64 + 1;
+    let ichingWinner = hex % 2 !== 0 ? teamA : teamB;
+    hex % 2 !== 0 ? scoreA += 2 : scoreB += 2;
+
+    // ==========================================
+    // 🖥️ ASYNC UI UPDATE
+    // ==========================================
     setTimeout(() => {
-        // Hide loader
         document.getElementById('loader').classList.add('hidden');
-
-        // DISPLAY RESULTS
-        document.getElementById('numOutput').innerHTML = 
-            `<strong>${teamA}</strong> Frequency: ${numA} <br>
-             <strong>${teamB}</strong> Frequency: ${numB} <br>
-             Day's Resonance: ${matchDayNum} <br>
-             <em>Alignment favors: ${numWinner}</em>`;
-
-        document.getElementById('astroOutput').innerHTML = 
-            `Match Day Sun: <strong>${zodiacMatch.sign} (${zodiacMatch.element})</strong> <br>
-             <strong>${teamA}</strong>: ${zodiacA.sign} (${zodiacA.element}) <br>
-             <strong>${teamB}</strong>: ${zodiacB.sign} (${zodiacB.element}) <br>
-             <em>Elemental affinity favors: ${astroWinner}</em>`;
-
-        document.getElementById('ichingOutput').innerHTML = 
-            `The casting reveals Hexagram <strong>#${hexagram}</strong>. <br>
-             Energy state: ${hexagram % 2 !== 0 ? 'Yang (Active/Home)' : 'Yin (Receptive/Away)'}. <br>
-             <em>The Book of Changes points to: ${ichingWinner}</em>`;
-
-        let finalVictor = "DRAW / STALEMATE";
-        if (scoreA > scoreB) finalVictor = teamA;
-        if (scoreB > scoreA) finalVictor = teamB;
-
-        document.getElementById('finalVerdict').innerText = finalVictor;
         
-        // Show results
+        document.getElementById('numOutput').innerHTML = `Chaldean & Pythagorean systems compared.<br>Divine Confirmation: <strong>${divineConf ? `<span class="highlight">${divineConf}</span>` : 'Slight Deviation (Split)'}</strong>`;
+        
+        document.getElementById('astroOutput').innerHTML = `Sun Affinity: ${astroW}<br>Moon: ${isWax?'Waxing':'Waning'} (Favors ${lunarW}) ${isFullOrNew?'<br><span class="highlight">(Apex Multiplier Active!)</span>':''}`;
+        
+        document.getElementById('managerOutput').innerHTML = `Home Aura: ${zMgrA.s} (${zMgrA.e})<br>Away Aura: ${zMgrB.s} (${zMgrB.e})<br><em>Alignment favors: <span class="highlight">${mgrWinner}</span></em>`;
+        
+        document.getElementById('geomancyOutput').innerHTML = `Stadium resonates with:<br><strong>${activeFigure}</strong><br><em>Ground favors: <span class="highlight">${geoWinner}</span></em>`;
+        
+        document.getElementById('bioOutput').innerHTML = `Net Resonance (P+E+I):<br>Home: ${bioA.toFixed(2)} | Away: ${bioB.toFixed(2)}<br><em>Physical peak: <span class="highlight">${bioWinner}</span></em>`;
+
+        document.getElementById('colorOutput').innerHTML = `Day's ruling palette: <strong>${rulingColors.join(' / ')}</strong><br><em>Advantage: <span class="highlight">${colorWinner}</span></em>`;
+
+        document.getElementById('ichingOutput').innerHTML = `Hexagram <strong>#${hex}</strong> cast.<br>State: ${hex%2!==0?'Yang (Active/Home)':'Yin (Receptive/Away)'} favoring <strong><span class="highlight">${ichingWinner}</span></strong>`;
+        
+        const victor = scoreA > scoreB ? teamA : (scoreB > scoreA ? teamB : "STALEMATE (Will of the Fates)");
+        document.getElementById('finalVerdict').innerText = victor;
+        
         document.getElementById('results').classList.remove('hidden');
-    }, 2500); // 2500 milliseconds = 2.5 seconds
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 2800);
 });
 
-// --- CLIPBOARD COPY LOGIC ---
+// ==========================================
+// 📋 UTILITIES
+// ==========================================
 document.getElementById('copyBtn').addEventListener('click', () => {
-    const teamA = document.getElementById('teamA').value.toUpperCase();
-    const teamB = document.getElementById('teamB').value.toUpperCase();
-    const matchDate = document.getElementById('matchDate').value;
-    const verdict = document.getElementById('finalVerdict').innerText;
-    
-    const textToCopy = `🔮 ARCANE PITCH FORECASTER 🔮\n⚽ ${teamA} vs ${teamB}\n📅 Date: ${matchDate}\n\n🏆 Prophesied Victor: ${verdict}\n\nCast your own runes to see the shifting fates!`;
-
-    navigator.clipboard.writeText(textToCopy).then(() => {
+    const text = `🔮 7 PILLARS OF PROPHECY 🔮\n⚽ ${document.getElementById('teamA').value.toUpperCase()} vs ${document.getElementById('teamB').value.toUpperCase()}\n\n🏆 Prophesied Victor: ${document.getElementById('finalVerdict').innerText}\n\nRead the stars yourself at the Arcane Forecaster!`;
+    navigator.clipboard.writeText(text).then(() => {
         const copyBtn = document.getElementById('copyBtn');
         copyBtn.innerText = "✅ Prophecy Copied!";
-        
-        setTimeout(() => {
-            copyBtn.innerText = "📋 Copy Prophecy to Clipboard";
-        }, 2500);
-    }).catch(err => {
-        alert("The fates blocked the copying process. Please try again.");
-        console.error("Clipboard write failed:", err);
+        setTimeout(() => copyBtn.innerText = "📋 Copy to Clipboard", 2500);
     });
 });
 
-// --- RESET LOGIC ---
 document.getElementById('resetBtn').addEventListener('click', () => {
-    document.getElementById('teamA').value = '';
-    document.getElementById('dateA').value = '';
-    document.getElementById('teamB').value = '';
-    document.getElementById('dateB').value = '';
-    document.getElementById('matchDate').value = '';
-    
-    // Hide both results and loader on reset
+    document.querySelectorAll('input').forEach(el => el.value = '');
+    document.getElementById('colorA').selectedIndex = 0;
+    document.getElementById('colorB').selectedIndex = 0;
     document.getElementById('results').classList.add('hidden');
     document.getElementById('loader').classList.add('hidden');
+    
+    document.getElementById('teamA').style.boxShadow = "none";
+    document.getElementById('teamA').style.borderColor = "var(--glass-border)";
+    document.getElementById('teamB').style.boxShadow = "none";
+    document.getElementById('teamB').style.borderColor = "var(--glass-border)";
 });

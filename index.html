@@ -3,51 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mystic Match Predictor</title>
+    <title>Advanced Mystic Predictor</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🔮 Mystic Match Predictor 🔮</h1>
-            <p>Unveiling the fate of the pitch through numerology, astrology, and the esoteric.</p>
+            <h1>👁️ Arcane Pitch Forecaster 👁️</h1>
+            <p>Decoding the threads of fate through ancient systems.</p>
         </header>
 
         <main>
-            <div class="input-group">
-                <label for="teamA">Home Team:</label>
-                <input type="text" id="teamA" placeholder="e.g., Arsenal">
-            </div>
-            
-            <div class="input-group">
-                <label for="teamB">Away Team:</label>
-                <input type="text" id="teamB" placeholder="e.g., Chelsea">
+            <div class="teams-container">
+                <div class="team-input">
+                    <label for="teamA">Home Team Name:</label>
+                    <input type="text" id="teamA" placeholder="e.g., Arsenal">
+                    <label for="dateA">Exact Founding Date:</label>
+                    <input type="date" id="dateA">
+                </div>
+                
+                <div class="team-input">
+                    <label for="teamB">Away Team Name:</label>
+                    <input type="text" id="teamB" placeholder="e.g., Chelsea">
+                    <label for="dateB">Exact Founding Date:</label>
+                    <input type="date" id="dateB">
+                </div>
             </div>
 
-            <div class="input-group">
-                <label for="matchDate">Match Date:</label>
+            <div class="match-details">
+                <label for="matchDate">Date of the Fixture:</label>
                 <input type="date" id="matchDate">
             </div>
 
-            <button id="predictBtn">Consult the Oracles</button>
+            <div class="action-buttons">
+                <button id="castBtn">Cast the Runes & Read the Stars</button>
+                <button id="resetBtn" class="reset-btn">Purge the Altar (Reset)</button>
+            </div>
+
+            <div id="loader" class="hidden">
+                <div class="mystic-spinner">👁️</div>
+                <p class="loading-text">Consulting the ancient scrolls...</p>
+            </div>
 
             <div id="results" class="hidden">
-                <h2>The Prophecy</h2>
-                <div class="card">
-                    <h3>🔢 Numerology Reading</h3>
-                    <p id="numResult"></p>
+                <div class="oracle-card">
+                    <h3>🔢 Chaldean Numerology</h3>
+                    <p id="numOutput"></p>
                 </div>
-                <div class="card">
-                    <h3>✨ Astrological Alignment</h3>
-                    <p id="astroResult"></p>
+                <div class="oracle-card">
+                    <h3>🌕 Astrological & Elemental Alignment</h3>
+                    <p id="astroOutput"></p>
                 </div>
-                <div class="card">
-                    <h3>👁️ Occult Resonance</h3>
-                    <p id="occultResult"></p>
+                <div class="oracle-card">
+                    <h3>☯️ I Ching (Book of Changes)</h3>
+                    <p id="ichingOutput"></p>
                 </div>
-                <div class="final-verdict">
-                    <h3>🏆 The Fated Winner: <span id="finalWinner"></span></h3>
+                <div class="verdict-card">
+                    <h3>🏆 The Prophesied Victor: <span id="finalVerdict"></span></h3>
                 </div>
+                
+                <button id="copyBtn" class="secondary-btn">📋 Copy Prophecy to Clipboard</button>
             </div>
         </main>
     </div>

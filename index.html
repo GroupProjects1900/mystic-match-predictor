@@ -4,65 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced Mystic Predictor</title>
+    
+    <link rel="icon" type="image/favicon.ico" href="favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <div class="glow-orb top-left"></div>
+    <div class="glow-orb bottom-right"></div>
+    
+    <div class="container glass-panel">
         <header>
-            <h1>👁️ Arcane Pitch Forecaster 👁️</h1>
-            <p>Decoding the threads of fate through ancient systems.</p>
+            <h1>🔮 Arcane Forecaster</h1>
+            <p>Predicting the pitch through algorithms and ancient alignments.</p>
         </header>
 
         <main>
             <div class="teams-container">
                 <div class="team-input">
-                    <label for="teamA">Home Team Name:</label>
+                    <label for="teamA">Home Team</label>
                     <input type="text" id="teamA" placeholder="e.g., Arsenal">
-                    <label for="dateA">Exact Founding Date:</label>
+                    <label for="dateA">Founding Date</label>
                     <input type="date" id="dateA">
                 </div>
                 
                 <div class="team-input">
-                    <label for="teamB">Away Team Name:</label>
+                    <label for="teamB">Away Team</label>
                     <input type="text" id="teamB" placeholder="e.g., Chelsea">
-                    <label for="dateB">Exact Founding Date:</label>
+                    <label for="dateB">Founding Date</label>
                     <input type="date" id="dateB">
                 </div>
             </div>
 
             <div class="match-details">
-                <label for="matchDate">Date of the Fixture:</label>
+                <label for="matchDate">Fixture Date</label>
                 <input type="date" id="matchDate">
             </div>
 
             <div class="action-buttons">
-                <button id="castBtn">Cast the Runes & Read the Stars</button>
-                <button id="resetBtn" class="reset-btn">Purge the Altar (Reset)</button>
+                <button id="castBtn" class="primary-btn">Cast the Runes</button>
+                <button id="resetBtn" class="reset-btn">Purge Altar</button>
             </div>
 
             <div id="loader" class="hidden">
                 <div class="mystic-spinner">👁️</div>
-                <p class="loading-text">Consulting the ancient scrolls...</p>
+                <p class="loading-text">Synchronizing with the cosmos...</p>
             </div>
 
             <div id="results" class="hidden">
-                <div class="oracle-card">
-                    <h3>🔢 Chaldean Numerology</h3>
-                    <p id="numOutput"></p>
-                </div>
-                <div class="oracle-card">
-                    <h3>🌕 Astrological & Elemental Alignment</h3>
-                    <p id="astroOutput"></p>
-                </div>
-                <div class="oracle-card">
-                    <h3>☯️ I Ching (Book of Changes)</h3>
-                    <p id="ichingOutput"></p>
-                </div>
-                <div class="verdict-card">
-                    <h3>🏆 The Prophesied Victor: <span id="finalVerdict"></span></h3>
+                <div class="oracle-grid">
+                    <div class="oracle-card">
+                        <h3>🔢 Numerology</h3>
+                        <p id="numOutput"></p>
+                    </div>
+                    <div class="oracle-card">
+                        <h3>🌕 Astrology</h3>
+                        <p id="astroOutput"></p>
+                    </div>
+                    <div class="oracle-card full-width">
+                        <h3>☯️ I Ching</h3>
+                        <p id="ichingOutput"></p>
+                    </div>
                 </div>
                 
-                <button id="copyBtn" class="secondary-btn">📋 Copy Prophecy to Clipboard</button>
+                <div class="verdict-card">
+                    <h3>Prophesied Victor</h3>
+                    <div id="finalVerdict" class="victor-name"></div>
+                </div>
+                
+                <button id="copyBtn" class="secondary-btn">📋 Copy to Clipboard</button>
             </div>
         </main>
     </div>

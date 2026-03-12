@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arcane Pitch Forecaster | Esoteric Football Predictions</title>
-    
+    <title>Arcane Pitch Forecaster | Hybrid Prediction Engine</title>
+
     <meta name="title" content="Arcane Pitch Forecaster">
-    <meta name="description" content="Predicting football match outcomes through deterministic algorithms, Chaldean numerology, and the I Ching.">
+    <meta name="description" content="Predicting football match outcomes through hybrid data anchors and esoteric algorithms.">
     <meta name="author" content="Kiru">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,18 +17,32 @@
 <body>
     <div class="glow-orb top-left"></div>
     <div class="glow-orb bottom-right"></div>
-    
+
     <div class="container glass-panel">
         <header>
             <h1>🔮 Arcane Forecaster</h1>
-            <p>Decoding the pitch through the 9 Pillars of esoteric alignment.</p>
+            <p>Decoding the pitch through Mundane Data and Esoteric Fates.</p>
         </header>
 
         <main>
             <div class="teams-container">
                 <div class="team-input">
-                    <label>Home Team</label>
+                    <h3 style="color: var(--neon-pink); text-align: center; margin-top: 0;">HOME SQUAD</h3>
+                    <label>Team Name</label>
                     <input type="text" id="teamA" placeholder="e.g., Arsenal">
+
+                    <label>League Position (1-20)</label>
+                    <input type="number" id="positionA" min="1" max="20" value="1">
+
+                    <label>Recent Form (Last 5)</label>
+                    <input type="text" id="formA" placeholder="e.g., WWDLW" maxlength="5">
+
+                    <label style="display: flex; align-items: center; gap: 10px; margin-top: 15px;">
+                        <input type="checkbox" id="injuryA" style="width: auto; transform: scale(1.2);">
+                        <span>Key Commander Injured?</span>
+                    </label>
+
+                    <hr style="border-color: var(--glass-border); margin: 20px 0;">
 
                     <label>Club Founding</label>
                     <input type="date" id="dateA">
@@ -52,8 +66,22 @@
                 </div>
 
                 <div class="team-input">
-                    <label>Away Team</label>
+                    <h3 style="color: var(--neon-cyan); text-align: center; margin-top: 0;">AWAY SQUAD</h3>
+                    <label>Team Name</label>
                     <input type="text" id="teamB" placeholder="e.g., Chelsea">
+
+                    <label>League Position (1-20)</label>
+                    <input type="number" id="positionB" min="1" max="20" value="2">
+
+                    <label>Recent Form (Last 5)</label>
+                    <input type="text" id="formB" placeholder="e.g., LDDWW" maxlength="5">
+
+                    <label style="display: flex; align-items: center; gap: 10px; margin-top: 15px;">
+                        <input type="checkbox" id="injuryB" style="width: auto; transform: scale(1.2);">
+                        <span>Key Commander Injured?</span>
+                    </label>
+
+                    <hr style="border-color: var(--glass-border); margin: 20px 0;">
 
                     <label>Club Founding</label>
                     <input type="date" id="dateB">
@@ -93,11 +121,19 @@
 
             <div id="loader" class="hidden">
                 <div class="mystic-spinner">👁️</div>
-                <p class="loading-text">Calculating the 9 Pillars of Fate...</p>
+                <p class="loading-text">Calculating Data Anchors & Fates...</p>
             </div>
 
             <div id="results" class="hidden">
-                <div class="oracle-grid">
+                <h2 style="text-align: center; color: var(--text-main); border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">📊 MUNDANE ANCHORS</h2>
+                <div class="oracle-grid" style="margin-top: 15px;">
+                    <div class="oracle-card"><h3>📈 Karmic Momentum</h3><p id="formOutput"></p></div>
+                    <div class="oracle-card"><h3>🏆 Hierarchy (League)</h3><p id="posOutput"></p></div>
+                    <div class="oracle-card full-width"><h3>⚕️ Attrition (Injuries)</h3><p id="injOutput"></p></div>
+                </div>
+
+                <h2 style="text-align: center; color: var(--text-main); border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; margin-top: 40px;">🔮 THE 9 PILLARS</h2>
+                <div class="oracle-grid" style="margin-top: 15px;">
                     <div class="oracle-card"><h3>🔢 Twin Numerology</h3><p id="numOutput"></p></div>
                     <div class="oracle-card"><h3>🌕 Club Astrology</h3><p id="astroOutput"></p></div>
                     <div class="oracle-card"><h3>👑 Commander Aura</h3><p id="managerOutput"></p></div>
@@ -109,9 +145,10 @@
                     <div class="oracle-card full-width"><h3>☯️ I Ching</h3><p id="ichingOutput"></p></div>
                 </div>
 
-                <div class="verdict-card">
-                    <h3>Prophesied Victor</h3>
+                <div class="verdict-card" style="margin-top: 40px;">
+                    <h3>Final Hybrid Verdict</h3>
                     <div id="finalVerdict" class="victor-name"></div>
+                    <p id="scoreBreakdown" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;"></p>
                 </div>
 
                 <button id="copyBtn" class="secondary-btn">📋 Copy to Clipboard</button>

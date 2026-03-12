@@ -21,7 +21,7 @@
     <div class="container glass-panel">
         <header>
             <h1>🔮 Arcane Forecaster</h1>
-            <p>Decoding the pitch through the 7 Pillars of esoteric alignment.</p>
+            <p>Decoding the pitch through the 9 Pillars of esoteric alignment.</p>
         </header>
 
         <main>
@@ -29,10 +29,10 @@
                 <div class="team-input">
                     <label>Home Team</label>
                     <input type="text" id="teamA" placeholder="e.g., Arsenal">
-                    
+
                     <label>Club Founding</label>
                     <input type="date" id="dateA">
-                    
+
                     <label>Manager Birth</label>
                     <input type="date" id="managerA">
 
@@ -50,14 +50,14 @@
                         <option value="Pink" selected>Pink / Magenta</option>
                     </select>
                 </div>
-                
+
                 <div class="team-input">
                     <label>Away Team</label>
                     <input type="text" id="teamB" placeholder="e.g., Chelsea">
-                    
+
                     <label>Club Founding</label>
                     <input type="date" id="dateB">
-                    
+
                     <label>Manager Birth</label>
                     <input type="date" id="managerB">
 
@@ -79,7 +79,9 @@
 
             <div class="match-details">
                 <label>Stadium / Grounds</label>
-                <input type="text" id="stadium" placeholder="e.g., Addis Ababa Stadium">
+                <input type="text" id="stadium" placeholder="e.g., Santiago Bernabéu">
+                <label>Match Official (Referee)</label>
+                <input type="text" id="referee" placeholder="e.g., Anthony Taylor">
                 <label>Fixture Date</label>
                 <input type="date" id="matchDate">
             </div>
@@ -91,7 +93,7 @@
 
             <div id="loader" class="hidden">
                 <div class="mystic-spinner">👁️</div>
-                <p class="loading-text">Calculating the 7 Pillars of Fate...</p>
+                <p class="loading-text">Calculating the 9 Pillars of Fate...</p>
             </div>
 
             <div id="results" class="hidden">
@@ -102,19 +104,20 @@
                     <div class="oracle-card"><h3>🌍 Geomancy</h3><p id="geomancyOutput"></p></div>
                     <div class="oracle-card"><h3>🧬 Captain Biorhythms</h3><p id="bioOutput"></p></div>
                     <div class="oracle-card"><h3>🎨 Chromotherapy</h3><p id="colorOutput"></p></div>
+                    <div class="oracle-card"><h3>⚖️ The Judge</h3><p id="refOutput"></p></div>
+                    <div class="oracle-card"><h3>🪐 Cosmic Transits</h3><p id="transitOutput"></p></div>
                     <div class="oracle-card full-width"><h3>☯️ I Ching</h3><p id="ichingOutput"></p></div>
                 </div>
-                
+
                 <div class="verdict-card">
                     <h3>Prophesied Victor</h3>
                     <div id="finalVerdict" class="victor-name"></div>
                 </div>
-                
+
                 <button id="copyBtn" class="secondary-btn">📋 Copy to Clipboard</button>
             </div>
-       </main>
+        </main>
     </div>
-    
     <script src="database.js"></script> 
     <script src="script.js"></script>
 </body>
